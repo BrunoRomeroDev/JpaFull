@@ -54,6 +54,7 @@ public class Application {
 		proprietario1.setTelefone("(34) 1234-5678");
 		proprietario1.setEmail("couves@gmail.com");
 		
+		manager.persist(proprietario1);
 		
 		veiculo1.setFabricante("Honda");
 		veiculo1.setModelo("Civic");
@@ -73,6 +74,8 @@ public class Application {
 		proprietario2.setNome("Maria das Neves");
 		proprietario2.setTelefone("(34) 654-987");
 		proprietario2.setEmail("Maria@gmail.com");
+		
+		manager.persist(proprietario2);
 		
 		Veiculo veiculo2 = new Veiculo();
 		
