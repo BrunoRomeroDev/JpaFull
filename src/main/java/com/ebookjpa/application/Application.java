@@ -18,6 +18,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import com.ebookjpa.entity.Acessorios;
+import com.ebookjpa.entity.Condutores;
 import com.ebookjpa.entity.Proprietario;
 import com.ebookjpa.entity.TipoCombustivel;
 import com.ebookjpa.entity.Veiculo;
@@ -47,6 +49,13 @@ public class Application {
 		EntityTransaction tx = manager.getTransaction();
 		tx.begin();
 		
+		Condutores condutor = new Condutores();
+		
+		condutor.setNome("Juca");
+		
+		manager.persist(condutor);
+		manager.detach(condutor);
+		
 		Veiculo veiculo1 = new Veiculo();
 		
 		Proprietario proprietario1 = new Proprietario();
@@ -55,6 +64,21 @@ public class Application {
 		proprietario1.setEmail("couves@gmail.com");
 		
 		manager.persist(proprietario1);
+		
+		// instancia acessórios
+		Acessorios roda = new Acessorios();
+		roda.setDescricao("Rodas de liga leve");
+		Acessorios sensor = new Acessorios();
+		sensor.setDescricao("Sensores de estacionamento");
+		Acessorios mp3 = new Acessorios();
+		mp3.setDescricao("MP3 Player");
+		Acessorios pintura = new Acessorios();
+		pintura.setDescricao("Pintura metalizada");
+		// persiste acessórios
+		manager.persist(roda);
+		manager.persist(sensor);
+		manager.persist(mp3);
+		manager.persist(pintura);
 		
 		veiculo1.setFabricante("Honda");
 		veiculo1.setModelo("Civic");
@@ -65,6 +89,9 @@ public class Application {
 		veiculo1.setTipoCombustivel(TipoCombustivel.BICOMBUSTIVEL);
 		veiculo1.setDataCadastro(new Date());
 		veiculo1.setProprietario(proprietario1);
+		veiculo1.setCondutores(condutor);
+		veiculo1.getAcessorios().add(sensor);
+		veiculo1.getAcessorios().add(roda);
 		
 		manager.persist(veiculo1);
 		manager.detach(veiculo1);
@@ -88,7 +115,9 @@ public class Application {
 		veiculo2.setTipoCombustivel(TipoCombustivel.ALCOOL);
 		veiculo2.setDataCadastro(new Date());
 		veiculo2.setFoto(foto);
-		veiculo1.setProprietario(proprietario2);
+		veiculo2.setProprietario(proprietario2);
+		veiculo2.getAcessorios().add(mp3);
+		veiculo2.getAcessorios().add(pintura);
 		
 		manager.persist(veiculo2);
 		manager.detach(veiculo2);
@@ -105,6 +134,9 @@ public class Application {
 		veiculo3.setTipoCombustivel(TipoCombustivel.GASOLINA);
 		veiculo3.setDataCadastro(new Date());
 		veiculo3.setProprietario(proprietario2);
+		veiculo3.setCondutores(condutor);
+		veiculo3.getAcessorios().add(sensor);
+		veiculo3.getAcessorios().add(pintura);
 		
 		manager.persist(veiculo3);
 		manager.detach(veiculo3);
@@ -121,10 +153,13 @@ public class Application {
 		veiculo4.setTipoCombustivel(TipoCombustivel.BICOMBUSTIVEL);
 		veiculo4.setDataCadastro(new Date());
 		veiculo4.setEspecificacoes(especificacoes.toString());
+		veiculo4.getAcessorios().add(sensor);
+		veiculo4.getAcessorios().add(pintura);
 		
 		manager.persist(veiculo4);
 		manager.detach(veiculo4);
 		
+		System.out.println(veiculo1 +"\n"+veiculo2+"\n"+veiculo3+"\n"+veiculo4+"\n");
 		
 		//mostra foto cadastrada
 		if (veiculo2.getFoto() != null) {
@@ -176,7 +211,7 @@ public class Application {
 				.createQuery("select v from Veiculo v");
 				@SuppressWarnings("unchecked")
 				List<Veiculo> veiculos = query.getResultList();
-		veiculos.forEach(v -> System.out.println(v + " \n"));
+		//veiculos.forEach(v -> System.out.println(v + " \n"));
 		
 				for (Veiculo v : veiculos) {
 					System.out.println(v.getCodigo() + " - "
@@ -218,15 +253,32 @@ public class Application {
 		
 		veiculo12 = manager.merge(veiculo12);
 		tx.commit();
+		
+		
+		List<Veiculo> veiculos2 = manager
+				.createQuery("select v from Veiculo v", Veiculo.class)
+				.getResultList();
+				for (Veiculo veiculo : veiculos2) {
+				System.out.println(veiculo.getModelo() + " - "
+				+ veiculo.getProprietario() == null?veiculo.getProprietario().getNome():" ");
+				}
+				
+		
+		System.out.println("-------------------Condutores------------------");
+		List<Condutores> Condutores = 	manager
+				.createQuery("select c from Condutores c", Condutores.class)
+				.getResultList();
+				
+		//Condutores.forEach(cond->System.out.println(cond+ " \n"));			
+	
+		for (Condutores v : Condutores) {
+			System.out.println(v.getCodigo() + " - "
+			+ v.getNome() + " "
+			+ v.getCodigo());
+			}
 		manager.close();
 		JpaUtil.close();
 		
-		
-		
-
-		
-	
-
 		
 	}
 
