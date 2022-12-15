@@ -19,8 +19,15 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import com.ebookjpa.entity.Acessorios;
+import com.ebookjpa.entity.Cargos;
+import com.ebookjpa.entity.Carro;
+import com.ebookjpa.entity.Cliente;
 import com.ebookjpa.entity.Condutores;
+import com.ebookjpa.entity.Funcionario;
+import com.ebookjpa.entity.Gerente;
+import com.ebookjpa.entity.Pessoa;
 import com.ebookjpa.entity.Proprietario;
+import com.ebookjpa.entity.SUV;
 import com.ebookjpa.entity.TipoCombustivel;
 import com.ebookjpa.entity.Veiculo;
 import com.ebookjpa.entity.VeiculoId;
@@ -161,6 +168,63 @@ public class Application {
 		
 		System.out.println(veiculo1 +"\n"+veiculo2+"\n"+veiculo3+"\n"+veiculo4+"\n");
 		
+		System.out.println("\n Persisntecia com heranca ---- Single Table");
+		
+		Funcionario funcionario = new Funcionario();
+		funcionario.setNome("Fernando");
+		funcionario.setCargo("Gerente");
+		funcionario.setSalario(new BigDecimal(12_000));
+		
+		Cliente cliente = new Cliente();
+		cliente.setNome("Mariana");
+		cliente.setRendaMensal(new BigDecimal(8_500));
+		cliente.setLimiteCredito(new BigDecimal(2_000));
+		cliente.setBloqueado(true);
+		
+		Gerente gerente = new Gerente();
+		gerente.setDescricao("Gerente comissionado");
+		gerente.setNome("Jose alencar");
+		gerente.setOcupacao("Gerente de negocios");
+		gerente.setSetor("Vendas");
+		
+		manager.persist(gerente);
+		manager.persist(funcionario);
+		manager.persist(cliente);
+		
+		System.out.println(cliente+"\n");
+		System.out.println(funcionario+"\n");
+		System.out.println(gerente+"\n");
+				
+		
+		List<Pessoa> pessoas = manager
+				.createQuery("select p from Pessoa p", Pessoa.class).getResultList();
+		for (Pessoa pessoa : pessoas) {
+			System.out.print(pessoa.getNome());
+			if (pessoa instanceof Cliente) {
+				System.out.println(" - é um cliente");
+			} else {
+				System.out.println(" - é um funcionário");
+			}
+		}
+		
+		List<Cargos> cargos = manager
+				.createQuery("select c from Cargos c", Cargos.class).getResultList();
+		
+		cargos.forEach(c -> System.out.println(c));
+		
+		SUV suv = new SUV();
+		suv.setAno(2020);
+		suv.setCor("laranja");
+		suv.setLugares(7);
+		suv.setTamanho(5.43);
+		suv.setModelo("long");
+		suv.setPreço(123.34);
+		
+		manager.persist(suv);
+		
+		List<Carro> listcarro = manager.createQuery("select c from Carro c",Carro.class).getResultList();
+		listcarro.forEach(c -> System.out.println(c));
+		
 		//mostra foto cadastrada
 		if (veiculo2.getFoto() != null) {
 			BufferedImage img = ImageIO.read(new ByteArrayInputStream(
@@ -276,6 +340,12 @@ public class Application {
 			+ v.getNome() + " "
 			+ v.getCodigo());
 			}
+		
+		
+		
+
+
+		
 		manager.close();
 		JpaUtil.close();
 		
